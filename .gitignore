@@ -1,0 +1,15 @@
+.gradle/
+build/
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+bin/
+out/
+*.class
+*.log
+.DS_Store
+
+# Database credentials - never commit this file
+db.properties

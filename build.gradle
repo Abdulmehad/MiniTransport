@@ -1,0 +1,155 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'jacoco'
+}
+
+group 'com.transporttycoon'
+version '1.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+// Set the main class for the application
+application {
+    mainClass = 'com.transporttycoon.DesktopLauncher'
+}
+
+repositories {
+    mavenCentral()
+}
+
+processResources {
+    from('assets') {
+        into 'assets'
+    }
+}
+
+// LibGDX version
+project.ext.gdxVersion = '1.12.1'
+
+dependencies {
+    // LibGDX core library
+    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+
+    // LibGDX LWJGL3 backend for desktop
+    implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+
+    // LibGDX platform natives for LWJGL3
+    implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    
+    // LibGDX FreeType extension for better font rendering
+    implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+
+    // PostgreSQL JDBC driver for Neon cloud persistence
+    implementation 'org.postgresql:postgresql:42.7.3'
+
+    // JUnit 5 for unit tests
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.0'
+    testRuntimeOnly  'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+    testRuntimeOnly  'org.junit.platform:junit-platform-launcher:1.10.0'
+}
+
+// Create a fat JAR (includes runtime dependencies)
+task fatJar(type: Jar) {
+    archiveBaseName.set('transport-tycoon-all')
+    archiveClassifier.set('')
+    archiveVersion.set(project.version)
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+    manifest {
+        attributes 'Main-Class': 'com.transporttycoon.DesktopLauncher'
+    }
+}
+
+tasks.named('build') {
+    dependsOn fatJar
+}
+
+// Create a Windows .exe using jpackage (requires JDK with jpackage available)
+tasks.register('createExe', Exec) {
+    dependsOn fatJar
+    def jarFileName = "transport-tycoon-all-${project.version}.jar"
+    def libsDir = new File(project.buildDir, 'libs').absolutePath
+    def destDir = new File(project.buildDir, 'jpackage')
+    def appImageDir = new File(destDir, 'TransportTycoon')
+    commandLine 'jpackage',
+        '--input', libsDir,
+        '--main-jar', jarFileName,
+        '--name', 'TransportTycoon',
+        '--main-class', 'com.transporttycoon.DesktopLauncher',
+        '--type', 'app-image',
+        '--dest', destDir.absolutePath
+    doFirst {
+        if (appImageDir.exists()) {
+            appImageDir.deleteDir()
+        }
+        destDir.mkdirs()
+    }
+}
+
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacoco {
+    toolVersion = "0.8.11"
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+    }
+    // Print a summary line that GitLab CI can parse for the coverage badge
+    doLast {
+        def reportFile = new File(project.buildDir, "reports/jacoco/test/jacocoTestReport.xml")
+        if (reportFile.exists()) {
+            def content = reportFile.text
+            def matcher = content =~ /type="LINE"\s+missed="(\d+)"\s+covered="(\d+)"/
+            int missed = 0
+            int covered = 0
+            while (matcher.find()) {
+                missed  = matcher.group(1).toInteger()
+                covered = matcher.group(2).toInteger()
+            }
+            int total = covered + missed
+            int pct   = total > 0 ? (covered * 100 / total).toInteger() : 0
+            println "Total coverage: ${pct}%"
+            println "  Lines covered : ${covered}"
+            println "  Lines missed  : ${missed}"
+            println "  Total lines   : ${total}"
+        }
+    }
+}
+
+// macOS requires -XstartOnFirstThread for GLFW (application plugin 'run' task)
+run {
+    if (System.getProperty('os.name').toLowerCase().contains('mac')) {
+        jvmArgs '-XstartOnFirstThread'
+    }
+}
+
+// Task to run the game
+task runGame(type: JavaExec) {
+    mainClass.set('com.transporttycoon.DesktopLauncher')
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+    workingDir = project.file('.')
+    ignoreExitValue = true
+    
+    // macOS requires this flag for GLFW
+    if (System.getProperty('os.name').toLowerCase().contains('mac')) {
+        jvmArgs = ['-XstartOnFirstThread']
+    }
+}

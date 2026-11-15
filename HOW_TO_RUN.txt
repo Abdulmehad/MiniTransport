@@ -1,0 +1,351 @@
+================================================================================
+              TRANSPORT TYCOON - HOW TO RUN
+================================================================================
+
+This file contains simple instructions to run the Transport Tycoon game.
+
+================================================================================
+  QUICK START (Windows)
+================================================================================
+
+1. Open Command Prompt or PowerShell
+2. Navigate to the project directory:
+   
+   cd d:\projects\transport-tycoon
+
+3. Run the game using the convenience script:
+   
+   run.bat
+
+4. Wait for the game window to appear (takes 5-10 seconds)
+
+5. Enjoy! 🎮
+
+
+================================================================================
+  ALTERNATIVE METHOD 1: Using Gradle Directly
+================================================================================
+
+If run.bat doesn't work, use Gradle directly:
+
+1. Open Command Prompt or PowerShell
+
+2. Navigate to project:
+   
+   cd d:\projects\transport-tycoon
+
+3. Run with Gradle wrapper:
+   
+   ./gradlew.bat runGame
+
+4. Wait for window to open
+
+
+================================================================================
+  ALTERNATIVE METHOD 2: Build then Run
+================================================================================
+
+Build the project first, then run:
+
+1. Build the project:
+   
+   ./gradlew.bat clean build
+
+2. Run the game:
+   
+   ./gradlew.bat runGame
+
+
+================================================================================
+  FOR LINUX / MAC USERS
+================================================================================
+
+1. Open Terminal
+
+2. Navigate to project:
+   
+   cd /path/to/transport-tycoon
+
+3. Make gradlew executable (first time only):
+   
+   chmod +x gradlew
+
+4. Run the game:
+   
+   ./gradlew runGame
+
+
+================================================================================
+  GAME CONTROLS
+================================================================================
+
+Once the game window opens:
+
+  CAMERA MOVEMENT:
+  - W or Up Arrow     = Move camera up
+  - S or Down Arrow   = Move camera down
+  - A or Left Arrow   = Move camera left
+  - D or Right Arrow  = Move camera right
+  - Mouse Wheel       = Zoom in/out
+
+  TIME MANAGEMENT:
+  - Space Bar         = Pause/Resume game
+  - T                 = Cycle time speed (Pause → Normal → Fast → Very Fast)
+
+  DISPLAY OPTIONS:
+  - G                 = Toggle grid overlay
+
+  INTERACTION:
+  - Left Mouse Click  = Select tile (shows info in console)
+
+  GENERAL:
+  - ESC               = Exit game
+
+
+================================================================================
+  WHAT YOU SHOULD SEE
+================================================================================
+
+When the game starts successfully, you will see:
+
+1. CONSOLE OUTPUT:
+   - "Loading game assets..."
+   - List of assets loaded (or procedural fallbacks)
+   - "Asset loading complete. Total textures: 14"
+   - "Transport Tycoon Game Started!"
+   - ASCII map representation
+   - Control instructions
+
+2. GAME WINDOW:
+   - Green grass tiles covering the map
+   - Cities with lit yellow windows and shadows
+     * New York (population 100K)
+     * Chicago (population 75K)
+   - Industrial facilities with unique designs:
+     * Iron Mine Alpha (gray building)
+     * Steel Works Beta (dark factory with smokestacks)
+     * Green Valley Farm (red barn)
+     * Paper Mill Delta (gray factory with smokestacks)
+   - UI panels showing:
+     * Capital: $50,000 (in gold color)
+     * Time speed indicator (color-coded)
+     * Day counter
+     * Control instructions
+
+
+================================================================================
+  TROUBLESHOOTING
+================================================================================
+
+PROBLEM: "gradlew.bat is not recognized"
+SOLUTION: Make sure you're in the correct directory
+          cd d:\projects\transport-tycoon
+
+PROBLEM: Window doesn't open
+SOLUTION: 1. Check console for error messages
+          2. Make sure Java 8+ is installed
+          3. Try: gradlew.bat clean build
+          4. Then: gradlew.bat runGame
+
+PROBLEM: Black screen / No graphics
+SOLUTION: 1. Check if OpenGL is supported on your system
+          2. Update graphics drivers
+          3. The game uses software rendering fallback automatically
+
+PROBLEM: "Port already in use" or similar
+SOLUTION: Close any other instances of the game and try again
+
+PROBLEM: Very slow performance
+SOLUTION: 1. Close other applications
+          2. The game should run at 60 FPS on most systems
+          3. Check Task Manager for high CPU usage by other programs
+
+
+================================================================================
+  SYSTEM REQUIREMENTS
+================================================================================
+
+MINIMUM:
+- OS: Windows 7/8/10/11, Linux, macOS
+- Java: JRE 8 or higher
+- RAM: 512 MB
+- Graphics: Any GPU with OpenGL 2.0+ support
+- Disk Space: 50 MB
+
+RECOMMENDED:
+- OS: Windows 10/11
+- Java: JRE 11 or higher
+- RAM: 1 GB
+- Graphics: Dedicated GPU
+- Disk Space: 100 MB
+
+
+================================================================================
+  CHECKING JAVA VERSION
+================================================================================
+
+To verify Java is installed:
+
+1. Open Command Prompt / Terminal
+
+2. Type:
+   
+   java -version
+
+3. You should see output like:
+   
+   java version "1.8.0_xxx" or higher
+
+If Java is not installed:
+- Download from: https://adoptium.net/
+- Or: https://www.oracle.com/java/technologies/downloads/
+
+
+================================================================================
+  FIRST TIME SETUP
+================================================================================
+
+When you first clone the repository:
+
+1. Clone the repository:
+   
+   git clone https://github.com/YOUR_USERNAME/transport-tycoon.git
+
+2. Navigate into the directory:
+   
+   cd transport-tycoon
+
+3. Build the project (downloads dependencies):
+   
+   gradlew.bat build
+   
+   (This takes 1-2 minutes on first run)
+
+4. Run the game:
+   
+   gradlew.bat runGame
+
+5. Done! The game is now ready to play.
+
+
+================================================================================
+  DEVELOPMENT MODE
+================================================================================
+
+For developers who want to make changes and test:
+
+1. Make your code changes in src/main/java/
+
+2. Build to check for errors:
+   
+   gradlew.bat build
+
+3. Run to test changes:
+   
+   gradlew.bat runGame
+
+4. The game will reflect your changes immediately
+
+Hot tip: Keep the console open to see debug output!
+
+
+================================================================================
+  ADDING CUSTOM ASSETS (OPTIONAL)
+================================================================================
+
+The game works perfectly without custom assets (uses procedural graphics).
+
+If you want to add custom graphics:
+
+1. Create/download PNG files (see ASSETS_GUIDE.md for details)
+
+2. Place in appropriate folders:
+   - assets/tiles/        (32x32 terrain tiles)
+   - assets/buildings/    (64x64 or 96x96 building sprites)
+   - assets/ui/           (UI elements)
+   - assets/fonts/        (TTF or bitmap fonts)
+
+3. Restart the game - assets load automatically!
+
+No code changes needed. The game detects and uses any assets you add.
+
+
+================================================================================
+  STOPPING THE GAME
+================================================================================
+
+To exit the game:
+
+METHOD 1: Press ESC key in the game window
+
+METHOD 2: Close the game window (click X)
+
+METHOD 3: In the console, press Ctrl+C to force stop
+
+The game saves no data yet (Milestone 4 feature), so no save prompt.
+
+
+================================================================================
+  PERFORMANCE TIPS
+================================================================================
+
+For best performance:
+
+1. Close unnecessary background applications
+2. Use "Normal" or "Fast" time speed (Very Fast uses more CPU)
+3. If frame rate drops, try disabling grid (press G)
+4. Update your graphics drivers
+5. On laptops, make sure you're using dedicated GPU, not integrated
+
+
+================================================================================
+  GETTING HELP
+================================================================================
+
+If you encounter issues:
+
+1. Check console output for error messages
+2. Read TROUBLESHOOTING section above
+3. Review README.md for detailed information
+4. Check IMPLEMENTATION_SUMMARY.md for technical details
+5. Open an issue on GitHub with:
+   - Error message from console
+   - Your Java version (java -version)
+   - Your operating system
+   - Steps to reproduce the problem
+
+
+================================================================================
+  WHAT'S NEXT?
+================================================================================
+
+Current version: Milestone 1 (v0.1.0)
+- ✅ Map system with cities and facilities
+- ✅ Enhanced visuals with procedural graphics
+- ✅ Camera controls and time management
+
+Coming in future milestones:
+- Milestone 2: Roads and vehicles
+- Milestone 3: Routes and cargo transport
+- Milestone 4: Advanced features (save/load, traffic lights, etc.)
+
+Check IMPLEMENTATION_PLAN.html for the full roadmap!
+
+
+================================================================================
+  ENJOY THE GAME!
+================================================================================
+
+You're all set! The game should run smoothly.
+
+If everything is working:
+- You see beautiful cities with lit windows
+- Factories with smokestacks
+- Smooth camera movement
+- Professional UI panels
+
+Have fun playing Transport Tycoon! 🚀
+
+Questions? Check the documentation files or open an issue.
+
+================================================================================
